@@ -108,15 +108,30 @@
               <td><b>Уровень угрозы по каждой уязвимости</b></td>
               <td><b>Уровень угрозы по всем уязвимостям, через которые она может быть реализована</b></td>
             </tr>
+            <%var ugroza_single_uyazvim = [];%> <!-- содержит уровень угроз по каждой уязвимости-->
+            <!-- Определение уровня угрозы по каждой уязвимости-->
+            <% for (var j=0; j<znacheniya.length; j++) { %>
+              <% ugroza_single_uyazvim[j] = znacheniya[j][0]*znacheniya[j][1]/10000; %>
+            <% } %>
+            <% var k = 0;%> <!-- для подсчета номера угрозы-->
+            <% var ugroza_all_uyazvim = [];%>
+            <% for (var i=0; i<threat; i++) {ugroza_all_uyazvim[i] = 0;}%> <!-- содержит уровень угроз по всем уязвимостям-->
+            <% var kol = numb_vulnerab[0]*1; %> <!-- для определения перехода к новой угрозе-->
+            <!-- Определение уровня угрозы по всем уязвимостям-->
+            <% for (var j=0; j<ugroza_single_uyazvim.length; j++) { %>
+              <% if (j+1 > kol)  { k++; kol += numb_vulnerab[k]*1;} %>
+              <% ugroza_all_uyazvim[k] += ugroza_single_uyazvim[j]*10000; %>
+            <% } %>
+            <%ugroza_all_uyazvim = ugroza_all_uyazvim.map(function(item){ return item/10000;}) %>
             <% var k = 0; %> <!-- для подсчета номера угрозы-->
             <% var kol = numb_vulnerab[0]*1; %> <!-- для определения перехода к новой угрозе-->
               <% for (var i=0; i<number; i++) { %>
                 <% if (i+1 > kol)  { k++; kol += numb_vulnerab[k]*1;} %>
                 <tr>
                 <td>Угроза <%= k+1 %> / Уязвимость <%= numb_vulnerab[k]-(kol-i)+1 %></td>
-                <td><%= znacheniya[i][0]*znacheniya[i][1] %></td>
+                <td><%= ugroza_single_uyazvim[i] %></td>
                 <% if (numb_vulnerab[k]-(kol-i)+1 == 1) { %>
-                  <td rowspan= <%= numb_vulnerab[k]*1%>>20</td>
+                  <td rowspan= <%= numb_vulnerab[k]*1%>><%= ugroza_all_uyazvim[k] %></td>
                   <% } %> 
               </tr>
             <% } %>
@@ -136,6 +151,10 @@
               <td><b>Уровень угрозы по всем уязвимости</b></td>
               <td><b>Общий уровень угроз по ресурсу</b></td>
             </tr>
+            <% var obsh_uroven_ugroz; %> <!-- Общий уровень угрозы-->
+            <% var sum =0; %>
+            <% ugroza_all_uyazvim.forEach(function(item) { sum += Math.round(item*10000);})%>
+            <% obsh_uroven_ugroz = sum/10000; %>
             <% var k = 0; %> <!-- для подсчета номера угрозы-->
             <% var kol = numb_vulnerab[0]*1; %> <!-- для определения перехода к новой угрозе-->
               <% for (var i=0; i<number; i++) { %>
@@ -143,10 +162,10 @@
                 <tr>
                 <td>Угроза <%= k+1 %> / Уязвимость <%= numb_vulnerab[k]-(kol-i)+1 %></td>
                 <% if (numb_vulnerab[k]-(kol-i)+1 == 1) { %>
-                  <td rowspan= <%= numb_vulnerab[k]*1%>>10</td>
+                  <td rowspan= <%= numb_vulnerab[k]*1%>><%= ugroza_all_uyazvim[k] %></td>
                   <% } %> 
                 <% if (i == 0) { %>
-                  <td rowspan= <%= number%>>20</td>
+                  <td rowspan= <%= number%>><%= obsh_uroven_ugroz %></td>
                   <% } %> 
 
               </tr>
@@ -172,10 +191,10 @@
                 <tr>
                 <td>Угроза <%= k+1 %> / Уязвимость <%= numb_vulnerab[k]-(kol-i)+1 %></td>
                 <% if (i == 0) { %>
-                  <td rowspan= <%= number%>>10</td>
+                  <td rowspan= <%= number%>><%= obsh_uroven_ugroz %></td>
                   <% } %> 
                 <% if (i == 0) { %>
-                  <td rowspan= <%= number%>>20</td>
+                  <td rowspan= <%= number%>><%= obsh_uroven_ugroz %></td>
                   <% } %> 
 
               </tr>

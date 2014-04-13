@@ -11,7 +11,7 @@ var app = express();
 
 var threat; // получение кол-ва угроз
 var vulnerability=[]; // получение кол-ва уязвимостей на каждую угрозу
-var mas=[];
+var mas=[]; // содержит перечисление всех угроз и уязвимостей
 
 app.set('port',3000);
 
@@ -29,6 +29,8 @@ app.get('/',function(req, res) {
 
 app.post('/get_data', function(req, res) {
 	threat = req.body['threat']; // получение кол-ва угроз
+	vulnerability = []; // сбрасываем значения
+	mas = []; // сбрасываем значения
 
 	for (var i in req.body) {
 		if (i == "threat") continue;
@@ -50,18 +52,16 @@ app.post('/get_data', function(req, res) {
 // Обработка запроса на подсчет рисков
 app.post('/count', function(req, res) {
 
-	var znach = [];
+	var znacheniya = [];
 	
 	for (var i in req.body) {
-		znach.push(req.body[i]);
+		znacheniya.push(req.body[i]);
 	}
-
-	console.log(znach);
 	
 	res.render("result", {
 		numb_vulnerab: vulnerability,
 		threat: threat,
-		znacheniya:znach
+		znacheniya:znacheniya
 	});
 
 	
